@@ -1,0 +1,97 @@
+{% extends "admin/admin.html" %}
+
+{% block content %}
+    <section class="content-header">
+        <h1>微电影管理系统</h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> 标签管理</a></li>
+            <li class="active">添加标签</li>
+        </ol>
+    </section>
+    <section class="content" id="showcontent">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">添加标签</h3>
+                    </div>
+                    <form role="form" method="post" novalidate>
+                        <div class="box-body">
+                            {% for msg in get_flashed_messages(category_filter=["ok"]) %}
+                                <div class="alert alert-success alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true"></button>
+                                    <h4><i class="icon fa fa-check"></i>添加成功</h4>
+                                    {{ msg }}
+                                </div>
+                            {% endfor %}
+                            {% for msg in get_flashed_messages(category_filter=["err"]) %}
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert"
+                                            aria-hidden="true"></button>
+                                    <h4><i class="icon fa fa-ban"></i></h4>
+                                    {{ msg }}
+                                </div>
+                            {% endfor %}
+                            <div class="form-group">
+                                <label for="input_name">{{ form.name.label }}</label>
+                                {{ form.name }}
+                                {% for err in form.name.errors %}
+                                    <div class="col-md-12">
+                                        <font style="color:red">{{ err }}</font>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="box-footer">
+                            {{ form.csrf_token }}
+                            {{ form.submit }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+
+{% block js %}
+    <script src="{{ url_for('static',filename='js/echarts.min.js') }}"></script>
+    <script>
+        var myChart = echarts.init(document.getElementById('meminfo'));
+        option = {
+            backgroundColor: "white",
+            tooltip: {
+                formatter: "{a} <br/>{b} : {c}%"
+            },
+            toolbox: {
+                feature: {
+                    restore: {},
+                    saveAsImage: {}
+                }
+            },
+            series: [{
+                name: '内存使用率',
+                type: 'gauge',
+                detail: {
+                    formatter: '{value}%'
+                },
+                data: [{
+                    value: 50,
+                    name: '内存使用率'
+                }]
+            }]
+        };
+        setInterval(function () {
+            option.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
+            myChart.setOption(option, true);
+        }, 2000);
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#g-2").addClass("active")
+            $("#g-2-1").addClass("active")
+        })
+    </script>
+{% endblock %}
